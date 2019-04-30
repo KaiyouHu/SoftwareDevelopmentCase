@@ -16,7 +16,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.4",
     "@vue/cli-plugin-eslint": "^3.0.4",
-    "@vue/cli-service": "^3.0.4",
+    "@vue/cli-service": "^3.7.0",
     "babel-eslint": "^10.0.1",
     "canvas-datagrid": "^0.22.12",
     "element-ui": "^2.8.2",

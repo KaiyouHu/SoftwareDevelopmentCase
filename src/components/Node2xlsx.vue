@@ -30,13 +30,10 @@
                 </div>
             </LayoutPanel>
             <LayoutPanel region="east" class="middle_height" style="width:120px;">
-                <div class="title">East Region</div>
+                <div class="title">(To be continued)</div>
             </LayoutPanel>
             <LayoutPanel region="center" class="middle_height">
-                <!--<div class="title">Center Region</div>-->
                 <canvas-datagrid :data.prop="sheet"></canvas-datagrid>
-                <!--<div id="grid" style="width: 100%;height: 100%;"></div>-->
-                <!--<canvas-datagrid  v-bind.prop="grid"></canvas-datagrid>-->
             </LayoutPanel>
         </Layout>
     </div>
