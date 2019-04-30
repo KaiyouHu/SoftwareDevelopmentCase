@@ -21,7 +21,7 @@
                     </div>
                     <template v-if="workbook !== null">
                         <div v-for="(SheetName, index) in workbook.SheetNames"
-                             :key="SheetName" @click="chooseSheet(SheetName, $event)"
+                             :key="SheetName" @click="chooseSheet(SheetName)"
                              style="border-width: 1px;border-color: #95B8E7;
                           border-bottom-style: solid;height: 32px;line-height: 32px;">
                             {{ index }}-{{ SheetName }}
@@ -110,8 +110,8 @@
         }
         this.file_name = file.name;
 
-        var wb;//读取完成的数据
-        var rABS = false; //是否将文件读取为二进制字符串
+        // var wb;//读取完成的数据
+        // var rABS = false; //是否将文件读取为二进制字符串
 
         this.readExcel(file)
       },
@@ -125,7 +125,7 @@
        */
       readExcel: function (file) {
         //判断浏览器是否支持FileReader接口
-        if(typeof FileReader == 'undefined'){
+        if(typeof FileReader === 'undefined'){
           this.$messager.alert({
             title: "系统错误",
             msg: "你的浏览器不支持FileReader接口！"
@@ -139,18 +139,11 @@
               type: 'binary'
             })
             this.workbook = workbook
-            console.log(this.workbook)
-
-            // for (let sheet in workbook.Sheets) {
-            //   const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
-            // }
-            // console.log(sheetArray)
           } catch (e) {
-            // this.$messager.alert({
-            //   title: "错误",
-            //   msg: "文件类型不正确"
-            // })
-            console.log(e)
+            this.$messager.alert({
+              title: "错误",
+              msg: "读取文件错误，调试信息：" + JSON.stringify(e)
+            })
             return false
           }
         };
@@ -161,14 +154,11 @@
        * @author Kaiyou Hu
        * @data 2019/04/30
        * @description 选择sheet
-       * @param
-       * @return workbook
+       * @param ShhetName
+       * @return workbook.sheet
        */
-      chooseSheet: function (SheetName, $event) {
-        // console.log(this.workbook.Sheets[SheetName])
+      chooseSheet: function (SheetName) {
         this.sheet = XLSX.utils.sheet_to_json(this.workbook.Sheets[SheetName])
-        console.table(this.sheet)
-        // console.log(JSON.stringify(sheet))
       }
     }
   }
