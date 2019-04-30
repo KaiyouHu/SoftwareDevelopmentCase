@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <Node2xlsx msg="Welcome to Your Vue.js App"/>
+    <Node2xlsx/>
   </div>
 </template>
 
@@ -23,6 +22,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
+  /* margin-top: 60px; */
 }
 </style>

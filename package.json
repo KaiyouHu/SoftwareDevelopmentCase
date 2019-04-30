@@ -9,13 +9,17 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vx-easyui": "^1.1.16",
+    "xlsx": "^0.14.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.4",
     "@vue/cli-plugin-eslint": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
     "babel-eslint": "^10.0.1",
+    "canvas-datagrid": "^0.22.12",
+    "element-ui": "^2.8.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "vue-template-compiler": "^2.5.21"

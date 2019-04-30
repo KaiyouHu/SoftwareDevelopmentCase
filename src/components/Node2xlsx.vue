@@ -1,57 +1,199 @@
 <template>
-    <div class="hello">
-        <h1>{{ msg }}</h1>
-        <p>
-            For a guide and recipes on how to configure / customize this project,<br>
-            check out the
-            <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-        </p>
-        <h3>Installed CLI Plugins</h3>
-        <ul>
-            <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-            <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-        </ul>
-        <h3>Essential Links</h3>
-        <ul>
-            <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-            <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-            <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-            <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-            <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-        </ul>
-        <h3>Ecosystem</h3>
-        <ul>
-            <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-            <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-            <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-            <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-            <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-        </ul>
+    <div class="all_windows">
+        <Layout style="width:100%;height:100%;">
+            <LayoutPanel region="north" style="height:50px;">
+                <div class="title">在Vue开发环境下，使用xlsx对表格进行读操作</div>
+            </LayoutPanel>
+            <LayoutPanel region="south" style="height:50px;">
+                    <div class="title">Copyright © 2019 Kaiyou Hu. All rights reserved.</div>
+            </LayoutPanel>
+            <LayoutPanel region="west" class="middle_height" style="width:160px;">
+                <div style="border-width: 1px;border-color: #95B8E7;
+                  border-bottom-style: solid;height: 160px;">
+                    <div id="drop">Drop a file here(Not yet)</div>
+                    <FileButton style="width:100px" @select="onFileSelect">Select a file</FileButton>
+                    <p v-if="file_name">You selected: {{file_name}}</p>
+                </div>
+                <div>
+                    <div style="border-width: 1px;border-color: #95B8E7;
+                      border-bottom-style: solid;height: 32px;line-height: 32px;">
+                        workbook
+                    </div>
+                    <template v-if="workbook !== null">
+                        <div v-for="(SheetName, index) in workbook.SheetNames"
+                             :key="SheetName" @click="chooseSheet(SheetName, $event)"
+                             style="border-width: 1px;border-color: #95B8E7;
+                          border-bottom-style: solid;height: 32px;line-height: 32px;">
+                            {{ index }}-{{ SheetName }}
+                        </div>
+                    </template>
+                </div>
+            </LayoutPanel>
+            <LayoutPanel region="east" class="middle_height" style="width:120px;">
+                <div class="title">East Region</div>
+            </LayoutPanel>
+            <LayoutPanel region="center" class="middle_height">
+                <!--<div class="title">Center Region</div>-->
+                <canvas-datagrid :data.prop="sheet"></canvas-datagrid>
+                <!--<div id="grid" style="width: 100%;height: 100%;"></div>-->
+                <!--<canvas-datagrid  v-bind.prop="grid"></canvas-datagrid>-->
+            </LayoutPanel>
+        </Layout>
     </div>
 </template>
 
 <script>
+  import XLSX from 'xlsx'
+  require('canvas-datagrid')
   export default {
     name: 'Node2xlsx',
+    // components:{
+    //   canvasDatagrid
+    // },
     props: {
-      msg: String
+
+    },
+    data() {
+      return {
+        /**
+         * @author Kaiyou Hu
+         * @data 2019/04/28
+         * @description 读取excel文件层次 file -> workbook -> sheet
+         */
+        file: null,
+        file_name: '',
+
+        workbook: null,
+
+        Sheets: null,
+
+        /**
+         * @author Kaiyou Hu
+         * @data 2019/04/30
+         * @description Cell
+         */
+        sheet: null
+      }
+    },
+    created() {
+
+    },
+    mounted() {
+
+    },
+    methods: {
+      /**
+       * @author Kaiyou Hu
+       * @data 2019/04/28
+       * @description 选择excel文件
+       * @param $event
+       * @return 文件
+       */
+      onFileSelect: function (event) {
+        if (event.length > 1 || event.length < 0){
+          this.$messager.alert({
+            title: "数量错误",
+            msg: "你可能一次添加了多个文件!"
+          });
+          return
+        }
+        var file = event[0]
+        this.file = file
+        const types = file.name.split('.')[1]
+        const fileType = ['txt', 'xlsx', 'xlsb', 'xlc', 'xlm', 'xls', 'xlt', 'xlw', 'csv'].some(item => item === types)
+        if (!fileType) {
+          this.$messager.alert({
+            title: "类型错误",
+            msg: "你可能使用了一个错误的文件类型!"
+          });
+          return
+        }
+        this.file_name = file.name;
+
+        var wb;//读取完成的数据
+        var rABS = false; //是否将文件读取为二进制字符串
+
+        this.readExcel(file)
+      },
+
+      /**
+       * @author Kaiyou Hu
+       * @data 2019/04/29
+       * @description 读取excel文件
+       * @param $file
+       * @return workbook
+       */
+      readExcel: function (file) {
+        //判断浏览器是否支持FileReader接口
+        if(typeof FileReader == 'undefined'){
+          this.$messager.alert({
+            title: "系统错误",
+            msg: "你的浏览器不支持FileReader接口！"
+          })
+        }
+        const fileReader = new FileReader(file);
+        fileReader.onload = (ev) => {
+          try {
+            const data = ev.target.result
+            const workbook = XLSX.read(data, {
+              type: 'binary'
+            })
+            this.workbook = workbook
+            console.log(this.workbook)
+
+            // for (let sheet in workbook.Sheets) {
+            //   const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+            // }
+            // console.log(sheetArray)
+          } catch (e) {
+            // this.$messager.alert({
+            //   title: "错误",
+            //   msg: "文件类型不正确"
+            // })
+            console.log(e)
+            return false
+          }
+        };
+        fileReader.readAsBinaryString(file);
+      },
+
+      /**
+       * @author Kaiyou Hu
+       * @data 2019/04/30
+       * @description 选择sheet
+       * @param
+       * @return workbook
+       */
+      chooseSheet: function (SheetName, $event) {
+        // console.log(this.workbook.Sheets[SheetName])
+        this.sheet = XLSX.utils.sheet_to_json(this.workbook.Sheets[SheetName])
+        console.table(this.sheet)
+        // console.log(JSON.stringify(sheet))
+      }
     }
   }
 </script>
 
 <style scoped>
-    h3 {
-        margin: 40px 0 0;
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    li {
-        display: inline-block;
-        margin: 0 10px;
-    }
-    a {
-        color: #42b983;
-    }
+  .all_windows {
+      width: 100%;
+      height: 100%;
+  }
+  .title {
+      text-align: center;
+      margin-top: 10px;
+  }
+  .middle_height {
+      height: 100%;
+  }
+  #drop{
+      border:2px dashed #bbb;
+      -moz-border-radius:5px;
+      -webkit-border-radius:5px;
+      border-radius:5px;
+      padding:0px 0px -50px 0px;
+      text-align:center;
+      width:158px;
+      font:16pt bold,"Vollkorn";color:#bbb
+  }
 </style>
