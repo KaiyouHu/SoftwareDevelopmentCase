@@ -30,7 +30,10 @@
                 </div>
             </LayoutPanel>
             <LayoutPanel region="east" class="middle_height" style="width:120px;">
-                <div class="title">(To be continued)</div>
+                <div style="border-width: 1px;border-color: #95B8E7;
+                  border-bottom-style: solid;height: 160px;">
+                    <el-button @click="saveSheet">下载当前sheet</el-button>
+                </div>
             </LayoutPanel>
             <LayoutPanel region="center" class="middle_height">
                 <canvas-datagrid :data.prop="sheet"></canvas-datagrid>
@@ -69,7 +72,8 @@
          * @data 2019/04/30
          * @description Cell
          */
-        sheet: null
+        sheet: null,
+        sheetName: ''
       }
     },
     created() {
@@ -151,11 +155,33 @@
        * @author Kaiyou Hu
        * @data 2019/04/30
        * @description 选择sheet
-       * @param ShhetName
+       * @param SheetName
        * @return workbook.sheet
        */
       chooseSheet: function (SheetName) {
-        this.sheet = XLSX.utils.sheet_to_json(this.workbook.Sheets[SheetName])
+        this.sheet = XLSX.utils.sheet_to_json(this.workbook.Sheets[SheetName], {header: 1})
+        this.sheetName = SheetName
+      },
+
+      /**
+       * @author Kaiyou Hu
+       * @data 2019/05/06
+       * @description 保存sheet
+       * @param SheetName
+       * @return workbook.sheet
+       */
+      saveSheet: function () {
+        if(this.sheetName === '') {
+          this.$messager.alert({
+            title: "错误",
+            msg: "尚未选择sheet"
+          })
+          return
+        }
+        var worksheet = XLSX.utils.aoa_to_sheet(this.sheet)
+        var workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, this.sheetName)
+        XLSX.writeFile(workbook, 'outFile.xlsx')
       }
     }
   }
