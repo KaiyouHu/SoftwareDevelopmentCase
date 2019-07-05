@@ -1,28 +1,15 @@
 <template>
-  <div id="app">
-    <Node2xlsx/>
-  </div>
+    <div id="app">
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
-import Node2xlsx from './components/Node2xlsx'
-
 export default {
-  name: 'app',
-  components: {
-    Node2xlsx
-  }
+    name: 'APP'
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  height: 100%;
-  /* margin-top: 60px; */
-}
+<style lang="scss">
+@import './styles/index.scss'; // 全局自定义的css样式
 </style>

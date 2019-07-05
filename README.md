@@ -1,26 +1,30 @@
-# case1_node2xlsx
+# 权限管理前端代码
+---
+访问地址：http://permission.yuanjy.com
 
-## Project setup
-```
+账号密码为默认值
+
+### 代码使用说明
+> 需要和后端一起使用  
+后端github地址：https://github.com/yjysanshu/springboot-authority
+
+> 新创建的用户的密码是：czh123，重置之后的密码也是这个
+
+#### 开发调试
+1、安装项目依赖
+```shell
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+2、启动项目
+```shell
+npm run dev
 ```
 
-### Run your tests
-```
-npm run test
+#### 打包上线
+```shell
+npm run build:prod
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+#### 不会
+加QQ群：630661697
