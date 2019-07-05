@@ -1,7 +1,7 @@
 {
   "name": "case2_authmanagement_frontend",
   "version": "1.0.0",
-  "description": "你的描述",
+  "description": "课程作业2——权限系统",
   "main": "index.js",
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -11,9 +11,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:yjysanshu/vue--authority.git"
+    "url": "git@github.com:KaiyouHu/SoftwareDevelopmentCase.git"
   },
-  "author": "yuanjy",
+  "author": "Kaiyou Hu",
   "license": "ISC",
   "dependencies": {
     "axios": "0.16.2",
